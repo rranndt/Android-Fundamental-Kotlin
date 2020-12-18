@@ -8,10 +8,46 @@
     tools:context=".MainActivity">
 
     <Button
+        android:id="@+id/btnMoveActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/btnMoveActivity"
         android:layout_marginBottom="16dp"
         android:text="@string/move_activity" />
+
+    <Button
+        android:id="@+id/btnMoveWithData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/move_with_data" />
+
+    <Button
+        android:id="@+id/btnMoveWithObject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/move_with_object" />
+
+    <Button
+        android:id="@+id/btnDialNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/dial_number" />
+
+    <Button
+        android:id="@+id/btnMoveForResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/move_with_result" />
+
+    <TextView
+        android:id="@+id/tvResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/result_from_activity"
+        android:textSize="24sp" />
 
 </LinearLayout>
