@@ -54,5 +54,6 @@ class MyButton : AppCompatButton {
     fun init() {
         txtColor = ContextCompat.getColor(context, android.R.color.background_light)
         enabledBackground = ResourcesCompat.getDrawable(resources, R.drawable.bg_button, null)
+        disabledBackground = ResourcesCompat.getDrawable(resources, R.drawable.bg_button_disable, null)
     }
 }
