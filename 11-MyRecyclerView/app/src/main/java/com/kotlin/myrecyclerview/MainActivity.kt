@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.kotlin.myrecyclerview.Adapter.GridHeroAdapter
 import com.kotlin.myrecyclerview.Adapter.ListHeroAdapter
 import com.kotlin.myrecyclerview.Model.Hero
 import com.kotlin.myrecyclerview.databinding.ActivityMainBinding
@@ -33,9 +35,9 @@ class MainActivity : AppCompatActivity() {
         val listHero = ArrayList<Hero>()
         for (position in dataName.indices) {
             val hero = Hero(
-                    dataName[position],
-                    dataDescription[position],
-                    dataPhoto[position]
+                dataName[position],
+                dataDescription[position],
+                dataPhoto[position]
             )
             listHero.add(hero)
         }
@@ -46,6 +48,12 @@ class MainActivity : AppCompatActivity() {
         binding.rvHeroes.layoutManager = LinearLayoutManager(this)
         val listHeroAdapter = ListHeroAdapter(list)
         binding.rvHeroes.adapter = listHeroAdapter
+    }
+
+    private fun showRecyclerGrid() {
+        binding.rvHeroes.layoutManager = GridLayoutManager(this, 2)
+        val gridHeroAdapter = GridHeroAdapter(list)
+        binding.rvHeroes.adapter = gridHeroAdapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -64,7 +72,7 @@ class MainActivity : AppCompatActivity() {
                 showRecyclerList()
             }
             R.id.actionGrid -> {
-
+                showRecyclerGrid()
             }
             R.id.actionCardview -> {
 
