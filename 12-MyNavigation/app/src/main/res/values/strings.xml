@@ -10,4 +10,6 @@
     <string name="category_name">Category Name</string>
     <string name="category_description">Category Description</string>
     <string name="to_home">Ke fragment Home</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
