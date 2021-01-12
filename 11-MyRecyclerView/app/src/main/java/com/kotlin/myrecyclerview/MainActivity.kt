@@ -2,6 +2,8 @@ package com.kotlin.myrecyclerview
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kotlin.myrecyclerview.Adapter.ListHeroAdapter
 import com.kotlin.myrecyclerview.Model.Hero
@@ -44,5 +46,29 @@ class MainActivity : AppCompatActivity() {
         binding.rvHeroes.layoutManager = LinearLayoutManager(this)
         val listHeroAdapter = ListHeroAdapter(list)
         binding.rvHeroes.adapter = listHeroAdapter
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        setMode(item.itemId)
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun setMode(selectedMode: Int) {
+        when (selectedMode) {
+            R.id.actionList -> {
+                showRecyclerList()
+            }
+            R.id.actionGrid -> {
+
+            }
+            R.id.actionCardview -> {
+
+            }
+        }
     }
 }
