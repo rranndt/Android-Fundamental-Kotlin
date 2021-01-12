@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kotlin.myrecyclerview.Adapter.CardViewHeroAdapter
@@ -11,6 +12,7 @@ import com.kotlin.myrecyclerview.Adapter.GridHeroAdapter
 import com.kotlin.myrecyclerview.Adapter.ListHeroAdapter
 import com.kotlin.myrecyclerview.Model.Hero
 import com.kotlin.myrecyclerview.databinding.ActivityMainBinding
+import com.kotlin.myrecyclerview.ItemClickCallback
 
 class MainActivity : AppCompatActivity() {
 
@@ -49,8 +51,6 @@ class MainActivity : AppCompatActivity() {
             }
             setMode(stateMode)
         }
-
-
     }
 
     fun getListHero(): ArrayList<Hero> {
@@ -81,12 +81,24 @@ class MainActivity : AppCompatActivity() {
         binding.rvHeroes.layoutManager = LinearLayoutManager(this)
         val listHeroAdapter = ListHeroAdapter(list)
         binding.rvHeroes.adapter = listHeroAdapter
+
+        listHeroAdapter.setOnItemClickCallback(object : ItemClickCallback {
+            override fun onItemClicked(data: Hero) {
+                showSelectedHero(data)
+            }
+        })
     }
 
     private fun showRecyclerGrid() {
         binding.rvHeroes.layoutManager = GridLayoutManager(this, 2)
         val gridHeroAdapter = GridHeroAdapter(list)
         binding.rvHeroes.adapter = gridHeroAdapter
+
+        gridHeroAdapter.setOnItemClickCallback(object : ItemClickCallback {
+            override fun onItemClicked(data: Hero) {
+                showSelectedHero(data)
+            }
+        })
     }
 
     private fun showRecyclerCardView() {
@@ -103,6 +115,10 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         setMode(item.itemId)
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showSelectedHero(hero: Hero) {
+        Toast.makeText(this, "Kamu memilih ${hero.name}", Toast.LENGTH_SHORT).show()
     }
 
     private fun setMode(selectedMode: Int) {
