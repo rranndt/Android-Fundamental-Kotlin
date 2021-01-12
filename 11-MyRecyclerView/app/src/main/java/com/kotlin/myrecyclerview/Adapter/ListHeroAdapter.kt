@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.kotlin.myrecyclerview.ItemClickCallback
 import com.kotlin.myrecyclerview.Model.Hero
 import com.kotlin.myrecyclerview.databinding.ItemRowHeroBinding
 
@@ -14,6 +15,12 @@ import com.kotlin.myrecyclerview.databinding.ItemRowHeroBinding
  */
 class ListHeroAdapter(private val listHero: ArrayList<Hero>) :
     RecyclerView.Adapter<ListHeroAdapter.ListViewHolder>() {
+
+    private var itemClickCallback: ItemClickCallback? = null
+
+    fun setOnItemClickCallback(itemClickCallback: ItemClickCallback) {
+        this.itemClickCallback = itemClickCallback
+    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -31,7 +38,7 @@ class ListHeroAdapter(private val listHero: ArrayList<Hero>) :
         return listHero.size
     }
 
-    class ListViewHolder(private val binding: ItemRowHeroBinding) :
+    inner class ListViewHolder(private val binding: ItemRowHeroBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(hero: Hero) {
             with(binding) {
@@ -41,8 +48,11 @@ class ListHeroAdapter(private val listHero: ArrayList<Hero>) :
                     .into(ivPhoto)
                 tvItemName.text = hero.name
                 tvItemDesc.text = hero.description
+
+                itemView.setOnClickListener {
+                    itemClickCallback?.onItemClicked(hero)
+                }
             }
         }
     }
-
 }
