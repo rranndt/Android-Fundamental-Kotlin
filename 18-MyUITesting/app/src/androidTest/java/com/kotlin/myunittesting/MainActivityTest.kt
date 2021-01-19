@@ -48,6 +48,22 @@ class MainActivityTest {
     }
 
     @Test
+    fun assertGetSurfaceArea() {
+        onView(withId(R.id.edtLength)).perform(typeText(dummyLength), closeSoftKeyboard())
+        onView(withId(R.id.edtWidth)).perform(typeText(dummyWidth), closeSoftKeyboard())
+        onView(withId(R.id.edtHeight)).perform(typeText(dummyHeight), closeSoftKeyboard())
+
+        onView(withId(R.id.btnSave)).check(matches(isDisplayed()))
+        onView(withId(R.id.btnSave)).perform(click())
+
+        onView(withId(R.id.btnCalculateSurfaceArea)).check(matches(isDisplayed()))
+        onView(withId(R.id.btnCalculateSurfaceArea)).perform(click())
+
+        onView(withId(R.id.tvResult)).check(matches(isDisplayed()))
+        onView(withId(R.id.tvResult)).check(matches(withText(dummySurfaceArea)))
+    }
+
+    @Test
     fun assertGetVolume() {
         onView(withId(R.id.edtLength)).perform(typeText(dummyLength), closeSoftKeyboard())
         onView(withId(R.id.edtWidth)).perform(typeText(dummyWidth), closeSoftKeyboard())
@@ -66,7 +82,31 @@ class MainActivityTest {
     // Penegcekan untuk empty input
     @Test
     fun assertEmptyInput() {
-        // Penegcekan input untuk length
+        // Pengecekan input untuk length
         onView(withId(R.id.edtLength)).perform(typeText(emptyInput), closeSoftKeyboard())
+
+        onView(withId(R.id.btnSave)).check(matches(isDisplayed()))
+        onView(withId(R.id.btnCalculateSurfaceArea)).perform(click())
+
+        onView(withId(R.id.edtLength)).check(matches(hasErrorText(fieldEmpty)))
+        onView(withId(R.id.edtLength)).perform(typeText(dummyLength), closeSoftKeyboard())
+
+        // Pengecekan untuk width
+        onView(withId(R.id.edtWidth)).perform(typeText(emptyInput), closeSoftKeyboard())
+
+        onView(withId(R.id.btnSave)).check(matches(isDisplayed()))
+        onView(withId(R.id.btnCalculateSurfaceArea)).perform(click())
+
+        onView(withId(R.id.edtWidth)).check(matches(hasErrorText(fieldEmpty)))
+        onView(withId(R.id.edtWidth)).perform(typeText(dummyLength), closeSoftKeyboard())
+
+        // Pengecekan input untuk height
+        onView(withId(R.id.edtHeight)).perform(typeText(emptyInput), closeSoftKeyboard())
+
+        onView(withId(R.id.btnSave)).check(matches(isDisplayed()))
+        onView(withId(R.id.btnCalculateSurfaceArea)).perform(click())
+
+        onView(withId(R.id.edtHeight)).check(matches(hasErrorText(fieldEmpty)))
+        onView(withId(R.id.edtHeight)).perform(typeText(dummyLength), closeSoftKeyboard())
     }
 }
