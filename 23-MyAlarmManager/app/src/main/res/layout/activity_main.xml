@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".MainActivity">
+    tools:context="com.kotlin.myalarmmanager.MainActivity">
 
     <TextView
         android:layout_width="match_parent"
@@ -23,10 +22,9 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-
         <ImageButton
             android:id="@+id/btn_once_date"
-            style="@style/Widget.AppCompat.ImageButton"
+            style="@style/Base.Widget.AppCompat.ImageButton"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_baseline_date_range" />
@@ -36,7 +34,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/alarm_date" />
-
     </LinearLayout>
 
     <LinearLayout
@@ -56,7 +53,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/alarm_time" />
-
     </LinearLayout>
 
     <EditText
@@ -73,5 +69,65 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:text="@string/set_one_time_alarm" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/repeating_alarm"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btn_repeating_alarm"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_access_time" />
+
+        <TextView
+            android:id="@+id/tv_repeating_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/alarm_time" />
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/edt_repating_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="@string/alarm_message"
+        android:inputType="text" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_set_repeating_alarm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="0.5"
+            android:text="@string/set_repeating_alarm" />
+
+        <Button
+            android:id="@+id/btn_cancel_repeating_alarm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="0.5"
+            android:text="@string/cancel_alarm" />
+
+    </LinearLayout>
 
 </LinearLayout>

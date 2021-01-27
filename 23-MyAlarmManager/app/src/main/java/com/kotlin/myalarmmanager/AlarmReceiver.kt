@@ -22,38 +22,45 @@ class AlarmReceiver : BroadcastReceiver() {
     companion object {
         const val TYPE_ONE_TIME = "OneTimeAlarm"
         const val TYPE_REPEATING = "RepeatingAlarm"
-        const val EXTRA_MESSAGE = "ExtraMessage"
+        const val EXTRA_MESSAGE = "message"
         const val EXTRA_TYPE = "type"
-
-        private const val DATE_FORMAT = "yyyy-MM-dd"
-        private const val TIME_FORMAT = "HH:mm"
 
         // Siapkan 2 id untuk 2 macam alarm, onetime dan repeating
         private const val ID_ONETIME = 100
         private const val ID_REPEATING = 101
+
+        private const val DATE_FORMAT = "yyyy-MM-dd"
+        private const val TIME_FORMAT = "HH:mm"
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
         val type = intent.getStringExtra(EXTRA_TYPE)
         val message = intent.getStringExtra(EXTRA_MESSAGE)
 
-        val title = if (type.equals(TYPE_ONE_TIME, ignoreCase = true)) TYPE_ONE_TIME else TYPE_REPEATING
-        val notifId = if (type.equals(TYPE_ONE_TIME, ignoreCase = true)) ID_ONETIME else ID_REPEATING
+        val title =
+            if (type.equals(TYPE_ONE_TIME, ignoreCase = true)) TYPE_ONE_TIME else TYPE_REPEATING
+        val notifId =
+            if (type.equals(TYPE_ONE_TIME, ignoreCase = true)) ID_ONETIME else ID_REPEATING
 
         showToast(context, title, message)
-        showAlarmNotification(context, title, message, notifId)
+        showAlarmNotification(context, title, message!!, notifId)
     }
 
     private fun showToast(context: Context, title: String, message: String?) {
-        Toast.makeText(context, "$title : $message", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "$title : $message", Toast.LENGTH_LONG).show()
     }
 
-    fun setOneTimeAlarm(context: Context, type: String, date: String, time: String, message: String) {
+    fun setOneTimeAlarm(
+        context: Context,
+        type: String,
+        date: String,
+        time: String,
+        message: String
+    ) {
         if (isDateInvalid(date, DATE_FORMAT) || isDateInvalid(time, TIME_FORMAT)) return
 
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, AlarmManager::class.java)
+        val intent = Intent(context, AlarmReceiver::class.java)
         intent.putExtra(EXTRA_MESSAGE, message)
         intent.putExtra(EXTRA_TYPE, type)
 
@@ -71,7 +78,47 @@ class AlarmReceiver : BroadcastReceiver() {
 
         val pendingIntent = PendingIntent.getBroadcast(context, ID_ONETIME, intent, 0)
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+
         Toast.makeText(context, "One time alarm set up", Toast.LENGTH_SHORT).show()
+    }
+
+    fun setRepeatingAlarm(context: Context, type: String, time: String, message: String) {
+        if (isDateInvalid(time, TIME_FORMAT)) return
+
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, AlarmReceiver::class.java)
+        intent.putExtra(EXTRA_MESSAGE, message)
+        val putExtra = intent.putExtra(EXTRA_TYPE, type)
+
+        val timeArray = time.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeArray[0]))
+        calendar.set(Calendar.MINUTE, Integer.parseInt(timeArray[1]))
+        calendar.set(Calendar.SECOND, 0)
+
+        val pendingIntent = PendingIntent.getBroadcast(context, ID_REPEATING, intent, 0)
+        alarmManager.setInexactRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            AlarmManager.INTERVAL_DAY,
+            pendingIntent
+        )
+
+        Toast.makeText(context, "Repeating alarm set up", Toast.LENGTH_SHORT).show()
+    }
+
+    fun cancelAlarm(context: Context, type: String) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, AlarmReceiver::class.java)
+        val requestCode =
+            if (type.equals(TYPE_ONE_TIME, ignoreCase = true)) ID_ONETIME else ID_REPEATING
+        val pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0)
+        pendingIntent.cancel()
+
+        alarmManager.cancel(pendingIntent)
+
+        Toast.makeText(context, "Repeating alarm dibatalkan", Toast.LENGTH_SHORT).show()
     }
 
     private fun isDateInvalid(date: String, format: String): Boolean {
@@ -85,31 +132,35 @@ class AlarmReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun showAlarmNotification(context: Context, title: String, message: String?, notifId: Int) {
-        val CHANNEL_ID = "Channel_1"
-        val CHANNEL_NAME = "AlarmManager channel"
+    private fun showAlarmNotification(
+        context: Context,
+        title: String,
+        message: String,
+        notifId: Int
+    ) {
+        val channelId = "Channel_1"
+        val channelName = "AlarmManager channel"
 
-        val notificationManagerCompat = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManagerCompat =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_baseline_access_time)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setColor(ContextCompat.getColor(context, android.R.color.transparent))
-                .setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
-                .setSound(alarmSound)
+        val builder = NotificationCompat.Builder(context, channelId)
+            .setSmallIcon(R.drawable.ic_baseline_access_time)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setColor(ContextCompat.getColor(context, android.R.color.transparent))
+            .setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
+            .setSound(alarmSound)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-            val channel = NotificationChannel(CHANNEL_ID,
-                    CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_DEFAULT)
-
+            val channel = NotificationChannel(
+                channelId,
+                channelName,
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
             channel.enableVibration(true)
             channel.vibrationPattern = longArrayOf(1000, 1000, 1000, 1000, 1000)
-
-            builder.setChannelId(CHANNEL_ID)
-
+            builder.setChannelId(channelId)
             notificationManagerCompat.createNotificationChannel(channel)
         }
 
