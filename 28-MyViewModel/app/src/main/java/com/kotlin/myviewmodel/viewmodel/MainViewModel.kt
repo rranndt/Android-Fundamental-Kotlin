@@ -1,15 +1,10 @@
-package com.kotlin.myviewmodel
+package com.kotlin.myviewmodel.viewmodel
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.util.Log
-import android.view.View
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.kotlin.myviewmodel.adapter.WeatherAdapter
-import com.kotlin.myviewmodel.databinding.ActivityMainBinding
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.kotlin.myviewmodel.model.WeatherItems
-import com.kotlin.myviewmodel.viewmodel.MainViewModel
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
 import cz.msebera.android.httpclient.Header
@@ -17,45 +12,16 @@ import org.json.JSONObject
 import java.lang.Exception
 import java.text.DecimalFormat
 
-class MainActivity : AppCompatActivity() {
+/**
+ *@author Rizki Rian Anandita
+ * Create By rizki
+ */
+class MainViewModel : ViewModel() {
 
-    private var _binding: ActivityMainBinding? = null
-    private val binding get() = _binding!!
+    val listWeather = MutableLiveData<ArrayList<WeatherItems>>()
 
-    private lateinit var adapter: WeatherAdapter
-    private lateinit var mainViewModel: MainViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        _binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        adapter = WeatherAdapter()
-        adapter.notifyDataSetChanged()
-
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        binding.recyclerView.adapter = adapter
-
-        mainViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(MainViewModel::class.java)
-
-        binding.btnCity.setOnClickListener {
-            val city = binding.edtCity.text.toString()
-            if (city.isEmpty()) return@setOnClickListener
-            showLoading(true)
-//            setWeather(city)
-            mainViewModel.setWeather(city)
-        }
-
-        mainViewModel.getWeather().observe(this, { weatherItems ->
-            if (weatherItems != null) {
-                adapter.setData(weatherItems)
-                showLoading(false)
-            }
-        })
-    }
-
-    /*
-    private fun setWeather(cities: String) {
+    fun setWeather(cities: String) {
+        // Request API
         val listItems = ArrayList<WeatherItems>()
 
         val apiKey = "bf9e5cb06e318d521c58c1af3f5935a3"
@@ -84,8 +50,11 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     // Set data ke adapter
+                    /*
                     adapter.setData(listItems)
                     showLoading(false)
+                     */
+                    listWeather.postValue(listItems)
                 } catch (e: Exception) {
                     Log.d("onSuccess", e.message.toString())
                     e.printStackTrace()
@@ -98,18 +67,8 @@ class MainActivity : AppCompatActivity() {
 
         })
     }
-     */
 
-    private fun showLoading(state: Boolean) {
-        if (state) {
-            binding.progressBar.visibility = View.VISIBLE
-        } else {
-            binding.progressBar.visibility = View.GONE
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
+    fun getWeather(): LiveData<ArrayList<WeatherItems>> {
+        return listWeather
     }
 }
